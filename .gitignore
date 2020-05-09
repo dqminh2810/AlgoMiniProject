@@ -1,0 +1,8 @@
+.idea/
+target/
+out/
+*.iml
+.vs/
+bin/
+obj/
+*.iml___jb_tmp___
