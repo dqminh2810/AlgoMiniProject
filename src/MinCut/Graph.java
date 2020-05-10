@@ -5,6 +5,7 @@ import Commun.Vertex;
 
 import java.io.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class Graph implements Cloneable {
 
@@ -166,6 +167,38 @@ public class Graph implements Cloneable {
     
     // ----- END GETERS
     
+    public String contractionsToString() {
+    	String s = "";
+    	for(Integer k : this.contractions.keySet()) {
+    		s = s + k + ": ";
+    		Hashtable<Integer, Integer> contTimes= new Hashtable<Integer, Integer>();
+    		for(Integer countContr : this.contractions.get(k)) {
+    			Integer repeated = contTimes.get(countContr);
+    			if(repeated == null) {
+    				repeated = 1;
+    			}
+    			else {
+    				repeated++;
+    			}
+    			contTimes.put(countContr, repeated);
+    		}   		
+    		Iterator<Entry<Integer, Integer>> itr = contTimes.entrySet().iterator();
+    		while(itr.hasNext()) {
+    			Entry<Integer, Integer> e = itr.next();
+    			Integer contractionsDone = e.getKey();
+    			Integer times = e.getValue();
+    			s = s + contractionsDone + " (" + times + " times)";
+    			if(itr.hasNext()) {
+    				s = s + ", ";
+    			}
+    			else {
+    				s = s + "\n";
+    			}
+    		}
+    	}
+    	return s;
+    }
+    
     public Object clone() throws CloneNotSupportedException {
         Graph g = new Graph();
         g.contractions = this.contractions;
@@ -246,8 +279,12 @@ public class Graph implements Cloneable {
             			Integer n = listToUpdate.get(updateIndex);
             			listToUpdate.set(updateIndex, n+contList[i]);
                 	}
-                	graphList[i].contractions.put(minList[i], listToUpdate);
             	}
+            	else {
+        			listToUpdate = new ArrayList<Integer>();
+        			listToUpdate.add(contList[i]);
+        		}
+            	graphList[i].contractions.put(minList[i], listToUpdate);
             }
             return min(minList, recursivity);
         }
