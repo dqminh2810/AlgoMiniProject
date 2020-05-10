@@ -14,7 +14,7 @@ public class Main {
     	
     	TestCut t = new TestCut(20, 2, "result1.txt");
     	t.doTest();
-    	t = new TestCut(250, 3, "result2.txt");
+    	t = new TestCut(75, 3, "result2.txt");
     	t.doTest();
     	/*String inputFileName = randomGraph;
         //Generate random graph with given nb of edges

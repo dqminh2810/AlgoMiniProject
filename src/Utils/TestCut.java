@@ -80,26 +80,16 @@ public class TestCut {
 				// Exepected succes = 1/log(r.nbVertices)
 				FlowNetwork f = new FlowNetwork(inputFileName);
 				int FordResult = f.calculateMaxFlowValue();
-				int KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
-
-				boolean equalValue = false;
 
 				for(int i=0; i<nRepeats2; i++){
-
+					int KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+					System.out.println(g.contractionsToString());
 					if(KargerResult == FordResult) {
 						System.out.println("Succes mincut = " + KargerResult);
-						equalValue = true;
-						break;
 					}else{
 						System.out.println("Karger result = " + KargerResult + " - " + "Ford result = " + FordResult);
 					}
-				}
-
-				if(!equalValue) {
-					System.out.println("Fail\n"
-							+ "Karger result = " + KargerResult
-							+ " - "
-							+ "Ford result = " + FordResult);
+					g = new Graph(inputFileName);
 				}
 			}
 			else {
@@ -116,6 +106,7 @@ public class TestCut {
 				int[] minCuts = new int[nRepeats2] ;
 				for(int i = 0; i < nRepeats2; i++) {
 					minCuts[i] = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+					g = new Graph(inputFileName);
 					//System.out.println("Karger result for each iteration:  " + minCuts[i]);
 
 				}
