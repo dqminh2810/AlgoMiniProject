@@ -6,3 +6,10 @@ out/
 bin/
 obj/
 *.iml___jb_tmp___
+.classpath
+.project
+resources/randomGraph1.txt
+resources/randomGraph1.txt
+resources/randomGraph2.txt
+results/results.txt
+results/result1.txt

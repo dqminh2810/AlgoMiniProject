@@ -150,6 +150,21 @@ public class Graph implements Cloneable {
         return contractionsDone;
     }
     
+    private Hashtable<Integer,Integer> contractionRepetition(Integer key) {
+    	Hashtable<Integer, Integer> contTimes= new Hashtable<Integer, Integer>();
+		for(Integer countContr : this.contractions.get(key)) {
+			Integer repeated = contTimes.get(countContr);
+			if(repeated == null) {
+				repeated = 1;
+			}
+			else {
+				repeated++;
+			}
+			contTimes.put(countContr, repeated);
+		}
+		return contTimes;
+    }
+    
     /*
      * PUBLIC METHODS
      */
@@ -167,21 +182,12 @@ public class Graph implements Cloneable {
     
     // ----- END GETERS
     
+    
     public String contractionsToString() {
     	String s = "";
     	for(Integer k : this.contractions.keySet()) {
     		s = s + k + ": ";
-    		Hashtable<Integer, Integer> contTimes= new Hashtable<Integer, Integer>();
-    		for(Integer countContr : this.contractions.get(k)) {
-    			Integer repeated = contTimes.get(countContr);
-    			if(repeated == null) {
-    				repeated = 1;
-    			}
-    			else {
-    				repeated++;
-    			}
-    			contTimes.put(countContr, repeated);
-    		}   		
+    		Hashtable<Integer, Integer> contTimes= this.contractionRepetition(k);	
     		Iterator<Entry<Integer, Integer>> itr = contTimes.entrySet().iterator();
     		while(itr.hasNext()) {
     			Entry<Integer, Integer> e = itr.next();
