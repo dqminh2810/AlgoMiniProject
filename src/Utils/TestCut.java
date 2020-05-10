@@ -83,19 +83,13 @@ public class TestCut {
 					results.add(KargerResult);
 					if(KargerResult == FordResult) {
 						System.out.println("Succes mincut = " + KargerResult);
-						equalValue = true;
-						break;
 					}else{
 						//System.out.println("Karger result = " + KargerResult + " - " + "Ford result = " + FordResult);
 					}
+					g = new Graph(inputFileName);
 				}
 
-				if(!equalValue) {
-					System.out.println("Fail\n"
-							+ "Karger result = " + KargerResult
-							+ " - "
-							+ "Ford result = " + FordResult);
-				}
+
 				results.add(Collections.min(results));
 				results.add(-1);
 				results.add(FordResult);
