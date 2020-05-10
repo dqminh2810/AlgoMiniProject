@@ -19,8 +19,7 @@ public class TestCut {
 	private int nbEdges;
 	private int nbRecursiveCalls;
 	private int nRepeats;
-	private int nbContractions;
-	
+
 	private ArrayList<Integer> results;
 	private Hashtable<Integer, ArrayList<Integer>> possibleMinContracts;
 	/*
@@ -96,24 +95,18 @@ public class TestCut {
 					this.possibleMinContracts.put(KargerResult, myList);
 					
 					if(KargerResult == FordResult) {
-						System.out.println("Succes mincut = " + KargerResult);
+						//System.out.println("Succes mincut = " + KargerResult);
 					}else{
 						//System.out.println("Karger result = " + KargerResult + " - " + "Ford result = " + FordResult);
 					}
 					g = new Graph(inputFileName);
 				}
-
-				if(!equalValue) {
-					System.out.println("Fail\n"
-							+ "Karger result = " + KargerResult
-							+ " - "
-							+ "Ford result = " + FordResult);
-				}
-				Integer minAbs = Collections.min(results);
+				System.out.println("Done");
+				int minAbs = Collections.min(results);
 				results.add(minAbs);
 				results.add(-1);
 				results.add(FordResult);
-				results.add(this.possibleMinContracts.get(minAbs).size());
+				//results.add(this.possibleMinContracts.get(minAbs).size());
 			}
 			else {
 				// Repeat nRepeats times Karger algorithm
@@ -144,7 +137,7 @@ public class TestCut {
 				}
 				Integer minAbs = Collections.min(results); 
 				results.add(minAbs);
-				results.add(this.possibleMinContracts.get(minAbs).size());
+				//results.add(this.possibleMinContracts.get(minAbs).size());
 				System.out.println("Karger result = " + min(minCuts, nRepeats));
 			}
 		}
@@ -172,6 +165,17 @@ public class TestCut {
 			myWriter.write(nbEdges+"\n");
 			myWriter.write(nbRecursiveCalls+"\n");
 			myWriter.write(nRepeats+"\n");
+			possibleMinContracts.forEach((k,v) -> {
+				try {
+					myWriter.write(k+"\t");
+					for(int c: v){
+						myWriter.write(c+"\t");
+					}
+					myWriter.write("\n");
+				} catch (IOException e) {
+
+				}
+			});
 			myWriter.write("\n");
 
 			for(int r: results){
