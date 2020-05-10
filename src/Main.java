@@ -7,10 +7,8 @@ import Utils.TestCut;
 import java.io.FileNotFoundException;
 
 public class Main {
-	static final String simpleInput = "resources/SimpleInput.txt";
-	static final String mincutInput = "resources/MinCutInput.txt";
-	static final String randomGraph = "resources/randomGraph.txt";
-	
+
+
     public static void main(String[] args) throws FileNotFoundException, CloneNotSupportedException {
 
     	
