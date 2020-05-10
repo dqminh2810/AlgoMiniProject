@@ -13,30 +13,24 @@ public class Main {
 
     	String inputFileName = randomGraph;
         //Generate random graph with given nb of edges
-        RandomConnectedGraph r= new RandomConnectedGraph(25);
+        RandomConnectedGraph r= new RandomConnectedGraph(50);
         r.buildRandomGraph();
-        r.printAdjacents();
+        //r.printAdjacents();
         r.exportTxtFile();
 
         //Test with min cut algo
         ClassLoader loader = Main.class.getClassLoader();
         Graph g = new Graph(inputFileName);
-        g.printGraph();
+        //g.printGraph();
         //System.out.println(g.calculateMaxFlowValue(g.vertices.get(3), g.vertices.get(10)));
         //System.out.println(g.calculateMaxFlowValue());
-        System.out.println("Karger mincut result: " + g.findMinCut());
-
-
+        System.out.println("Karger mincut result: " + g.findMinCut(2, (int) (1+g.getNumberOfVertices()/Math.sqrt(2))));
+        
         //Test with ford fukerson algo
         FlowNetwork f = new FlowNetwork(inputFileName);
         //f.printGraph();
         //System.out.println(g.calculateMaxFlowValue(g.vertices.get(3), g.vertices.get(10)));
         //f.setSrcSink(10, 7);
         System.out.println("Ford Fukerson maxflow result: " + f.calculateMaxFlowValue());
-
-
-
-
-
     }
 }

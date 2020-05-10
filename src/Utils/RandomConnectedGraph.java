@@ -86,9 +86,7 @@ public class RandomConnectedGraph {
                             setEdge(to2, k);
                             nbEdges++;
                         }
-
                    }
-
                }
             });
         }
