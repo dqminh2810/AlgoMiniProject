@@ -1,6 +1,7 @@
 import FordFukerson.FlowNetwork;
 import MinCut.Graph;
 import Utils.RandomConnectedGraph;
+import Utils.TestCase;
 import Utils.TestCut;
 
 import java.io.FileNotFoundException;
@@ -12,11 +13,7 @@ public class Main {
 	
     public static void main(String[] args) throws FileNotFoundException, CloneNotSupportedException {
 
-    	TestCut t = new TestCut(20, 2, "randomGraph1.txt", "result1.txt");
-    	t.doTest();
-    	t.exportResult();
-    	t = new TestCut(75, 3, "randomGraph1.txt","result2.txt");
-    	t.doTest();
+		TestCase.testCase(20, 5);
     	/*String inputFileName = randomGraph;
         //Generate random graph with given nb of edges
         RandomConnectedGraph r= new RandomConnectedGraph(50);
