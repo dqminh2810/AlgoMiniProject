@@ -10,14 +10,17 @@ import MinCut.Graph;
 
 public class TestCut {
 	
-	FileWriter myWriter;
-	
+	private FileWriter myWriter;
+	private int nbEdges;
+	private int nbRecursiveCalls;
 	/*
 	 * CONSTRUCTORS
 	 */
-	public TestCut() {
+	public TestCut(int edg, int recCalls) {
 		try {
-			this.myWriter = new FileWriter(new File("", "results.txt"));
+			this.myWriter = new FileWriter(new File("results", "results.txt"));
+			this.nbEdges = edg;
+			this.nbRecursiveCalls = nbRecursiveCalls;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -42,15 +45,14 @@ public class TestCut {
 		return finalOutput;
 	}
 	
-	private void test(RandomConnectedGraph r, int nRepeats) {
-		if (r.nbEdges <= 70) {
-			// Check results with Ford Fukerson algorithm
-			// Exepected succes = 1/log(r.nbVertices)
+	private int min(int[] values, int length) {
+		int minVal = values[0];
+		for(int i = 1; i < length; i++) {
+			if(values[i] < minVal) {
+				minVal = values[i];
+			}
 		}
-		else {
-			// Repeat nRepeats times Karger algorithm
-			// Expected succes = 1 - 1/n
-		}
+		return minVal;
 	}
 	
 	/*
@@ -59,10 +61,40 @@ public class TestCut {
 	
 	public void doTest() {
 		try	{
-			System.out.println("---- Starting tests ----");
-			RandomConnectedGraph r = new RandomConnectedGraph(50);
-			System.out.println("Random graph with " + r.nbEdges + " edges and " + r.nbVertices + " vertices");
-			test(r, (int) (Math.pow(Math.log(r.nbVertices), 2)) );
+			RandomConnectedGraph r = new RandomConnectedGraph(this.nbEdges);
+			r.exportTxtFile();
+			System.out.println("Random graph with " + r.nbEdges 
+					+ " edges and " + r.nbVertices + " vertices generated");
+			
+			String inputFileName = "resources/randomGraph.txt";
+			Graph g = new Graph(inputFileName);
+			int numberOfContracts = (int) (1+g.getNumberOfVertices()/Math.sqrt(2));
+			
+			if (r.nbEdges <= 70) {
+				// Check results with Ford Fukerson algorithm
+				// Exepected succes = 1/log(r.nbVertices)
+				FlowNetwork f = new FlowNetwork(inputFileName);
+				int KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+				int FordResult = f.calculateMaxFlowValue();
+				if(KargerResult == FordResult) {
+					System.out.println("Succes mincut = " + KargerResult);
+				}
+				else {
+					System.out.println("Fail\n"
+							+ "Karger result = " + KargerResult
+							+ "Ford result = " + FordResult);
+				}
+			}
+			else {
+				// Repeat nRepeats times Karger algorithm
+				// Expected succes = 1 - 1/n
+				int nRepeats =(int) (Math.pow(Math.log(g.getNumberOfVertices()), 2));
+				int[] minCuts = new int[nRepeats] ;
+				for(int i = 0; i < nRepeats; i++) {
+					minCuts[i] = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+				}
+				System.out.println("Karger result = " + min(minCuts, nRepeats));
+			}
 			this.myWriter.close();
 		}
 		catch (Exception e){

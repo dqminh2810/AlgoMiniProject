@@ -1,6 +1,7 @@
 import FordFukerson.FlowNetwork;
 import MinCut.Graph;
 import Utils.RandomConnectedGraph;
+import Utils.TestCut;
 
 import java.io.FileNotFoundException;
 
@@ -10,8 +11,12 @@ public class Main {
 	static final String randomGraph = "resources/randomGraph.txt";
 	
     public static void main(String[] args) throws FileNotFoundException, CloneNotSupportedException {
-
-    	String inputFileName = randomGraph;
+    	
+    	TestCut t = new TestCut(20, 2);
+    	t.doTest();
+    	t = new TestCut(250, 3);
+    	t.doTest();
+    	/*String inputFileName = randomGraph;
         //Generate random graph with given nb of edges
         RandomConnectedGraph r= new RandomConnectedGraph(50);
         r.buildRandomGraph();
@@ -31,6 +36,7 @@ public class Main {
         //f.printGraph();
         //System.out.println(g.calculateMaxFlowValue(g.vertices.get(3), g.vertices.get(10)));
         //f.setSrcSink(10, 7);
-        System.out.println("Ford Fukerson maxflow result: " + f.calculateMaxFlowValue());
+        System.out.println("Ford Fukerson maxflow result: " + f.calculateMaxFlowValue());*/
+    	
     }
 }

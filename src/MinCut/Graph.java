@@ -10,7 +10,8 @@ public class Graph implements Cloneable {
 
     private Hashtable<Integer, Vertex> vertices;
     private ArrayList<Edge> edges;
-    private Hashtable<Integer, ArrayList<Integer>> contractions;
+    //Key: mincut, Value: list of number of contractions made to arrive to mincut value
+    private Hashtable<Integer, ArrayList<Integer>> contractions; 
     private String inputFileName;
 
     /*
@@ -211,32 +212,16 @@ public class Graph implements Cloneable {
      */
     public int findMinCut(int inRec, int inNOC) throws FileNotFoundException, CloneNotSupportedException{
         if (this.vertices.size() <= 6 || this.edges.size() == 0) {
-            //WARNING: Please change the value of nRepeat to a much smaller one (e.g. n)
-            //if you want the program run faster! However, n^2 * ln(n) times of repeat
-            //would ensure a (1-1/n) rate of success on finding the minCut.
-        	int n = this.edges.size();
-        	if(this.vertices.size() > this.edges.size()) {
-        		n = this.vertices.size();
-        	}
-            int minCut = n*n;
-            int nRepeat = (int) (Math.pow(n, 2) * Math.log(n)); //Please read Warning above!
-            int contractionsDone = 0;
-            //int nRepeat = n; //You can change to this one.
-            for (int i = 0; i < nRepeat; i++){
-                Graph g = (Graph)this.clone();
-                contractionsDone = g.randomContract();
-                int crossingEdges = g.edges.size();
-                ArrayList<Integer> contList = this.contractions.get(crossingEdges);
-                if (contList == null) {
-                	contList = new ArrayList<Integer>();
-                }
-                contList.add(contractionsDone);
-                this.contractions.put(crossingEdges, contList);
-                if (crossingEdges < minCut){
-                    minCut = crossingEdges;
-                }
+            int contractionsDone = 0;     
+            contractionsDone = this.randomContract();
+            int crossingEdges = this.edges.size();
+            ArrayList<Integer> contList = this.contractions.get(crossingEdges);
+            if (contList == null) {
+            	contList = new ArrayList<Integer>();
             }
-            return minCut;
+            contList.add(contractionsDone);
+            this.contractions.put(crossingEdges, contList);
+            return crossingEdges;
         }
         else {
             int recursivity = inRec;
