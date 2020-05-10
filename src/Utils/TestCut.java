@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 
 import Utils.RandomConnectedGraph;
 import FordFukerson.FlowNetwork;
@@ -19,8 +20,9 @@ public class TestCut {
 	private int nbRecursiveCalls;
 	private int nRepeats;
 	private int nbContractions;
-
+	
 	private ArrayList<Integer> results;
+	private Hashtable<Integer, ArrayList<Integer>> possibleMinContracts;
 	/*
 	 * CONSTRUCTORS
 	 */
@@ -31,6 +33,7 @@ public class TestCut {
 			nbVertices = 0;
 			nRepeats = 0;
 			results = new ArrayList<>();
+			this.possibleMinContracts = new Hashtable<Integer, ArrayList<Integer>>();
 			this.randomGraphFileName = randomGraphFileName;
 			this.resultFileName = resultFileName;
 		}
@@ -74,13 +77,24 @@ public class TestCut {
 				FlowNetwork f = new FlowNetwork(inputFileName);
 				int FordResult = f.calculateMaxFlowValue();
 
-				int KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+				int KargerResult = 0;
 
 				boolean equalValue = false;
 
 				for(int i=0; i<nRepeats; i++){
 					KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
 					results.add(KargerResult);
+					// Recover min value and times reached with number of contractions done
+					ArrayList<Integer> contractionsList = g.getContractions().get(KargerResult);
+					ArrayList<Integer> myList = this.possibleMinContracts.get(KargerResult);
+					if(myList != null) {
+						myList.addAll(contractionsList);
+					}
+					else {
+						myList = contractionsList;
+					}
+					this.possibleMinContracts.put(KargerResult, myList);
+					
 					if(KargerResult == FordResult) {
 						System.out.println("Succes mincut = " + KargerResult);
 					}else{
@@ -89,10 +103,17 @@ public class TestCut {
 					g = new Graph(inputFileName);
 				}
 
-
-				results.add(Collections.min(results));
+				if(!equalValue) {
+					System.out.println("Fail\n"
+							+ "Karger result = " + KargerResult
+							+ " - "
+							+ "Ford result = " + FordResult);
+				}
+				Integer minAbs = Collections.min(results);
+				results.add(minAbs);
 				results.add(-1);
 				results.add(FordResult);
+				results.add(this.possibleMinContracts.get(minAbs).size());
 			}
 			else {
 				// Repeat nRepeats times Karger algorithm
@@ -109,10 +130,21 @@ public class TestCut {
 				for(int i = 0; i < nRepeats; i++) {
 					minCuts[i] = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
 					results.add(minCuts[i]);
+					ArrayList<Integer> contractionsList = g.getContractions().get(minCuts[i]);
+					ArrayList<Integer> myList = this.possibleMinContracts.get(minCuts[i]);
+					if(myList != null) {
+						myList.addAll(contractionsList);
+					}
+					else {
+						myList = contractionsList;
+					}
+					this.possibleMinContracts.put(minCuts[i], myList);
 					//System.out.println("Karger result for each iteration:  " + minCuts[i]);
 					g = new Graph(inputFileName);
 				}
-				results.add(Collections.min(results));
+				Integer minAbs = Collections.min(results); 
+				results.add(minAbs);
+				results.add(this.possibleMinContracts.get(minAbs).size());
 				System.out.println("Karger result = " + min(minCuts, nRepeats));
 			}
 		}

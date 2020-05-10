@@ -13,14 +13,17 @@ public class Main {
 	
     public static void main(String[] args) throws FileNotFoundException, CloneNotSupportedException {
 
+
 		TestCase.testCase(20, 5);
     	/*String inputFileName = randomGraph;
         //Generate random graph with given nb of edges
+
+        /*
+
         RandomConnectedGraph r= new RandomConnectedGraph(50);
         r.buildRandomGraph();
         //r.printAdjacents();
         r.exportTxtFile();
-
         //Test with min cut algo
         ClassLoader loader = Main.class.getClassLoader();
         Graph g = new Graph(inputFileName);
