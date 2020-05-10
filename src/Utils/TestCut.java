@@ -97,8 +97,6 @@ public class TestCut {
 					
 					if(KargerResult == FordResult) {
 						System.out.println("Succes mincut = " + KargerResult);
-						equalValue = true;
-						break;
 					}else{
 						//System.out.println("Karger result = " + KargerResult + " - " + "Ford result = " + FordResult);
 					}
