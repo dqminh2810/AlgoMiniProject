@@ -5,9 +5,13 @@ import Utils.RandomConnectedGraph;
 import java.io.FileNotFoundException;
 
 public class Main {
-
+	static final String simpleInput = "resources/SimpleInput.txt";
+	static final String mincutInput = "resources/MinCutInput.txt";
+	static final String randomGraph = "resources/randomGraph.txt";
+	
     public static void main(String[] args) throws FileNotFoundException, CloneNotSupportedException {
 
+    	String inputFileName = randomGraph;
         //Generate random graph with given nb of edges
         RandomConnectedGraph r= new RandomConnectedGraph(25);
         r.buildRandomGraph();
@@ -16,19 +20,19 @@ public class Main {
 
         //Test with min cut algo
         ClassLoader loader = Main.class.getClassLoader();
-        Graph g = new Graph("resources/randomGraph.txt");
+        Graph g = new Graph(inputFileName);
         g.printGraph();
         //System.out.println(g.calculateMaxFlowValue(g.vertices.get(3), g.vertices.get(10)));
         //System.out.println(g.calculateMaxFlowValue());
-        System.out.println(g.findMinCut());
+        System.out.println("Karger mincut result: " + g.findMinCut());
 
 
         //Test with ford fukerson algo
-        FlowNetwork f = new FlowNetwork("resources/randomGraph.txt");
+        FlowNetwork f = new FlowNetwork(inputFileName);
         //f.printGraph();
         //System.out.println(g.calculateMaxFlowValue(g.vertices.get(3), g.vertices.get(10)));
         //f.setSrcSink(10, 7);
-        System.out.println(f.calculateMaxFlowValue());
+        System.out.println("Ford Fukerson maxflow result: " + f.calculateMaxFlowValue());
 
 
 
