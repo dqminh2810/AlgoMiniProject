@@ -13,8 +13,8 @@ public class Main {
 	
     public static void main(String[] args) throws FileNotFoundException, CloneNotSupportedException {
 
-
-		TestCase.testCase(20, 5);
+    	
+		TestCase.testCase(20, 5, 15);
     	/*String inputFileName = randomGraph;
         //Generate random graph with given nb of edges
 

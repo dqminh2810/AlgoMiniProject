@@ -19,18 +19,20 @@ public class TestCut {
 	private int nbEdges;
 	private int nbRecursiveCalls;
 	private int nRepeats;
+	private int maxNbContracts;
 
 	private ArrayList<Integer> results;
 	private Hashtable<Integer, ArrayList<Integer>> possibleMinContracts;
 	/*
 	 * CONSTRUCTORS
 	 */
-	public TestCut(int edg, int recCalls, String randomGraphFileName, String resultFileName) {
+	public TestCut(int edg, int recCalls, int nbContracts, String randomGraphFileName, String resultFileName) {
 		try {
 			this.nbEdges = edg;
 			this.nbRecursiveCalls = recCalls;
 			nbVertices = 0;
 			nRepeats = 0;
+			this.maxNbContracts = nbContracts;
 			results = new ArrayList<>();
 			this.possibleMinContracts = new Hashtable<Integer, ArrayList<Integer>>();
 			this.randomGraphFileName = randomGraphFileName;
@@ -64,12 +66,10 @@ public class TestCut {
 
 			Graph g = new Graph(inputFileName);
 
-			int numberOfContracts = (int) (1+g.getNumberOfVertices()/Math.sqrt(2));
+			//int numberOfContracts = (int) (1+g.getNumberOfVertices()/Math.sqrt(2));
 			//int nRepeats =(int) (Math.pow(Math.log(g.getNumberOfVertices()), 2));
 			nRepeats =(int) (Math.pow(g.getNumberOfVertices(), 2)*Math.log(g.getNumberOfVertices()));
-
-
-
+			
 			if (nbEdges <= 40) {
 				// Check results with Ford Fukerson algorithm
 				// Exepected succes = 1/log(r.nbVertices)
@@ -81,7 +81,10 @@ public class TestCut {
 				boolean equalValue = false;
 
 				for(int i=0; i<nRepeats; i++){
-					KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+					if(this.maxNbContracts == -1) {
+						this.maxNbContracts = (int) (1+g.getNumberOfVertices()/Math.sqrt(2));
+					}
+					KargerResult = g.findMinCut(this.nbRecursiveCalls, this.maxNbContracts);
 					results.add(KargerResult);
 					// Recover min value and times reached with number of contractions done
 					ArrayList<Integer> contractionsList = g.getContractions().get(KargerResult);
@@ -121,7 +124,7 @@ public class TestCut {
 
 				int[] minCuts = new int[nRepeats] ;
 				for(int i = 0; i < nRepeats; i++) {
-					minCuts[i] = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+					minCuts[i] = g.findMinCut(this.nbRecursiveCalls, this.maxNbContracts);
 					results.add(minCuts[i]);
 					ArrayList<Integer> contractionsList = g.getContractions().get(minCuts[i]);
 					ArrayList<Integer> myList = this.possibleMinContracts.get(minCuts[i]);
@@ -164,6 +167,7 @@ public class TestCut {
 			myWriter.write(nbVertices+"\n");
 			myWriter.write(nbEdges+"\n");
 			myWriter.write(nbRecursiveCalls+"\n");
+			myWriter.write(maxNbContracts + "\n");
 			myWriter.write(nRepeats+"\n");
 			possibleMinContracts.forEach((k,v) -> {
 				try {
