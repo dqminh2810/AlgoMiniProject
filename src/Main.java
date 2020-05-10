@@ -12,9 +12,9 @@ public class Main {
 	
     public static void main(String[] args) throws FileNotFoundException, CloneNotSupportedException {
     	
-    	TestCut t = new TestCut(20, 2);
+    	TestCut t = new TestCut(20, 2, "result1.txt");
     	t.doTest();
-    	t = new TestCut(250, 3);
+    	t = new TestCut(250, 3, "result2.txt");
     	t.doTest();
     	/*String inputFileName = randomGraph;
         //Generate random graph with given nb of edges

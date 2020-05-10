@@ -113,9 +113,9 @@ public class RandomConnectedGraph {
         return adjacencyList;
     }
 
-    public void exportTxtFile(){
+    public void exportTxtFile(String fileNameExported){
         try {
-            FileWriter myWriter = new FileWriter(new File("resources", "randomGraph.txt"));
+            FileWriter myWriter = new FileWriter(new File("resources", fileNameExported));
             adjacencyList.forEach((k,v) -> {
                 try {
                     myWriter.write(k+"\t");
@@ -131,5 +131,13 @@ public class RandomConnectedGraph {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNbVertices(){
+        return nbVertices;
+    }
+
+    public int getNbEdges(){
+        return nbVertices;
     }
 }
