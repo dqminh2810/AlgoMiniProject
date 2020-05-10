@@ -3,46 +3,40 @@ package Utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import Utils.RandomConnectedGraph;
 import FordFukerson.FlowNetwork;
 import MinCut.Graph;
 
 public class TestCut {
-	
-	private FileWriter myWriter;
+
+	private String randomGraphFileName;
+	private String resultFileName;
+	private int nbVertices;
 	private int nbEdges;
 	private int nbRecursiveCalls;
+	private int nRepeats;
+	private int nbContractions;
+
+	private ArrayList<Integer> results;
 	/*
 	 * CONSTRUCTORS
 	 */
-	public TestCut(int edg, int recCalls, String outputFileName) {
+	public TestCut(int edg, int recCalls, String randomGraphFileName, String resultFileName) {
 		try {
-			this.myWriter = new FileWriter(new File("results", outputFileName));
 			this.nbEdges = edg;
 			this.nbRecursiveCalls = recCalls;
+			nbVertices = 0;
+			nRepeats = 0;
+			results = new ArrayList<>();
+			this.randomGraphFileName = randomGraphFileName;
+			this.resultFileName = resultFileName;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/*
-	 * PRIVATE METHODS
-	 */
-	private void exportResult(String stats){
-		try {
-            myWriter.write(stats);
-            myWriter.write("\n");
-        } 
-    	catch (IOException e) {
-            e.printStackTrace();
-        }
-	}
-	
-	private String formatOutput(int GraphSize, int nbOfTries, int nRepeats) {
-		String finalOutput = "";
-		return finalOutput;
 	}
 	
 	private int min(int[] values, int length) {
@@ -61,17 +55,16 @@ public class TestCut {
 	
 	public void doTest() {
 		try	{
-			String graphFileName = "randomGraph.txt";
-			String inputFileName = "resources/"+graphFileName;
+			String inputFileName = "resources/"+randomGraphFileName;
 
 			//Generate graph with given nb of edges and export to graphFileName
-			this.generateRandomGraph(nbEdges, graphFileName);
+			this.generateRandomGraph(nbEdges, randomGraphFileName);
 
 			Graph g = new Graph(inputFileName);
 
 			int numberOfContracts = (int) (1+g.getNumberOfVertices()/Math.sqrt(2));
-			int nRepeats =(int) (Math.pow(Math.log(g.getNumberOfVertices()), 2));
-			int nRepeats2 =(int) (Math.pow(g.getNumberOfVertices(), 2)*Math.log(g.getNumberOfVertices()));
+			//int nRepeats =(int) (Math.pow(Math.log(g.getNumberOfVertices()), 2));
+			nRepeats =(int) (Math.pow(g.getNumberOfVertices(), 2)*Math.log(g.getNumberOfVertices()));
 
 
 
@@ -80,18 +73,20 @@ public class TestCut {
 				// Exepected succes = 1/log(r.nbVertices)
 				FlowNetwork f = new FlowNetwork(inputFileName);
 				int FordResult = f.calculateMaxFlowValue();
+
 				int KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
 
 				boolean equalValue = false;
 
-				for(int i=0; i<nRepeats2; i++){
-
+				for(int i=0; i<nRepeats; i++){
+					KargerResult = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+					results.add(KargerResult);
 					if(KargerResult == FordResult) {
 						System.out.println("Succes mincut = " + KargerResult);
 						equalValue = true;
 						break;
 					}else{
-						System.out.println("Karger result = " + KargerResult + " - " + "Ford result = " + FordResult);
+						//System.out.println("Karger result = " + KargerResult + " - " + "Ford result = " + FordResult);
 					}
 				}
 
@@ -101,6 +96,9 @@ public class TestCut {
 							+ " - "
 							+ "Ford result = " + FordResult);
 				}
+				results.add(Collections.min(results));
+				results.add(-1);
+				results.add(FordResult);
 			}
 			else {
 				// Repeat nRepeats times Karger algorithm
@@ -113,15 +111,16 @@ public class TestCut {
 				* P(success) >= 1 - 1/n
 				* */
 
-				int[] minCuts = new int[nRepeats2] ;
-				for(int i = 0; i < nRepeats2; i++) {
+				int[] minCuts = new int[nRepeats] ;
+				for(int i = 0; i < nRepeats; i++) {
 					minCuts[i] = g.findMinCut(this.nbRecursiveCalls, numberOfContracts);
+					results.add(minCuts[i]);
 					//System.out.println("Karger result for each iteration:  " + minCuts[i]);
-
+					g = new Graph(inputFileName);
 				}
-				System.out.println("Karger result = " + min(minCuts, nRepeats2));
+				results.add(Collections.min(results));
+				System.out.println("Karger result = " + min(minCuts, nRepeats));
 			}
-			this.myWriter.close();
 		}
 		catch (Exception e){
 			e.printStackTrace();
@@ -136,5 +135,27 @@ public class TestCut {
 		System.out.println("Random graph with " + r.nbEdges
 				+ " edges and " + r.nbVertices + " vertices generated");
 		this.nbEdges = r.getNbEdges();
+		this.nbVertices = r.getNbVertices();
 	}
+
+
+	public void exportResult(){
+		try {
+			FileWriter myWriter = new FileWriter(new File("results", resultFileName));
+			myWriter.write(nbVertices+"\n");
+			myWriter.write(nbEdges+"\n");
+			myWriter.write(nbRecursiveCalls+"\n");
+			myWriter.write(nRepeats+"\n");
+			myWriter.write("\n");
+
+			for(int r: results){
+				if(r==-1) myWriter.write("\n");
+				else myWriter.write(r+"\n");
+			}
+			myWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
